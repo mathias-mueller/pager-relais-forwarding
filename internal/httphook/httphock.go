@@ -2,20 +2,21 @@ package httphook
 
 import (
 	"awesomeProject1/internal/config"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
-	"net/url"
+	neturl "net/url"
+
+	"github.com/rs/zerolog/log"
 )
 
-func Send(conf *config.HttpConfig, client *http.Client) {
+func Send(conf *config.HTTPConfig, client *http.Client) {
 	for _, endpoint := range conf.Endpoints {
 		go sendToEndpoint(endpoint, client)
 	}
 }
 
-func sendToEndpoint(endpoint *config.HttpConfigItem, client *http.Client) {
-	URL, err := url.Parse(endpoint.URL)
+func sendToEndpoint(endpoint *config.HTTPConfigItem, client *http.Client) {
+	url, err := neturl.Parse(endpoint.URL)
 	if err != nil {
 		log.Err(err).
 			Str("url", endpoint.URL).
@@ -23,22 +24,22 @@ func sendToEndpoint(endpoint *config.HttpConfigItem, client *http.Client) {
 	}
 	req := &http.Request{
 		Method: endpoint.Method,
-		URL:    URL,
+		URL:    url,
 	}
 	log.Info().
 		Str("url", endpoint.URL).
 		Str("method", endpoint.Method).
 		Msg("Calling endpoint")
 	resp, err := client.Do(req)
-	defer func(Body io.ReadCloser) {
-		e := Body.Close()
+	defer func() {
+		e := resp.Body.Close()
 		if e != nil {
 			log.Err(e).
 				Str("url", endpoint.URL).
 				Str("method", endpoint.Method).
 				Msg("Could not close response body")
 		}
-	}(resp.Body)
+	}()
 	if err != nil {
 		log.Err(err).
 			Str("url", endpoint.URL).
@@ -47,7 +48,14 @@ func sendToEndpoint(endpoint *config.HttpConfigItem, client *http.Client) {
 		return
 	}
 	body, err := io.ReadAll(resp.Body)
-	if resp.StatusCode >= 400 {
+	if err != nil {
+		log.Err(err).
+			Str("url", endpoint.URL).
+			Str("method", endpoint.Method).
+			Int("status", resp.StatusCode).
+			Msg("Could not read response body")
+	}
+	if resp.StatusCode >= http.StatusBadRequest {
 		log.Error().
 			Str("url", endpoint.URL).
 			Str("method", endpoint.Method).

@@ -16,11 +16,11 @@ type GpioConfig struct {
 	Interval int
 }
 
-type HttpConfig struct {
-	Endpoints []*HttpConfigItem
+type HTTPConfig struct {
+	Endpoints []*HTTPConfigItem
 }
 
-type HttpConfigItem struct {
+type HTTPConfigItem struct {
 	Name   string
 	URL    string
 	Method string

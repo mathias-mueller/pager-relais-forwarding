@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLoad_nofile(t *testing.T) {
@@ -31,13 +32,22 @@ func TestLoad(t *testing.T) {
 				"[telegram]\n" +
 					"ChatID = 1234567890\n" +
 					"APIToken = abcdefghijk\n" +
-					"MessageFile = message.txt",
+					"MessageFile = message.txt\n" +
+					"[gpio]\n" +
+					"Pin = 10\n" +
+					"Interval = 1000",
 			},
-			want: &Config{TelegramConfig: &TelegramConfig{
-				ChatID:      1234567890,
-				APIToken:    "abcdefghijk",
-				MessageFile: "message.txt",
-			}},
+			want: &Config{
+				TelegramConfig: &TelegramConfig{
+					ChatID:      1234567890,
+					APIToken:    "abcdefghijk",
+					MessageFile: "message.txt",
+				},
+				GpioConfig: &GpioConfig{
+					Pin:      10,
+					Interval: 1000,
+				},
+			},
 			wantErr: assert.NoError,
 		},
 		{
@@ -89,17 +99,42 @@ func TestLoad(t *testing.T) {
 			want:    nil,
 			wantErr: assert.Error,
 		},
+		{
+			name: "no gpio pin",
+			args: args{
+				"[telegram]\n" +
+					"ChatID = 1234567890\n" +
+					"APIToken = abcdefghijk\n" +
+					"MessageFile = message.txt\n" +
+					"[gpio]\n" +
+					"Interval = 1000",
+			},
+			want:    nil,
+			wantErr: assert.Error,
+		},
+		{
+			name: "no gpio interval",
+			args: args{
+				"[telegram]\n" +
+					"ChatID = 1234567890\n" +
+					"APIToken = abcdefghijk\n" +
+					"MessageFile = message.txt\n" +
+					"[gpio]\n" +
+					"Pin = 10",
+			},
+			want:    nil,
+			wantErr: assert.Error,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.NoError(t, os.WriteFile("config.ini", []byte(tt.args.config), os.ModePerm))
 			defer func() { assert.NoError(t, os.Remove("config.ini")) }()
 			got, err := Load()
-			if !tt.wantErr(t, err, fmt.Sprintf("Load()")) {
+			if !tt.wantErr(t, err, fmt.Sprintf("Load(%+v)", tt.args)) {
 				return
 			}
 			assert.Equalf(t, tt.want, got, "Load()")
-
 		})
 	}
 }

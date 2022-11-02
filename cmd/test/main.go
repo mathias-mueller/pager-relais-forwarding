@@ -3,13 +3,13 @@ package main
 import (
 	"awesomeProject1/internal/config"
 	"awesomeProject1/internal/gpio"
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 func main() {
-
 	log.Logger = log.Output(
 		zerolog.ConsoleWriter{
 			Out: os.Stdout,

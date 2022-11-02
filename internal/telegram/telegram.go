@@ -2,17 +2,18 @@ package telegram
 
 import (
 	"awesomeProject1/internal/config"
+	"os"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
-var bot *tgbotapi.BotAPI
-var conf *config.TelegramConfig
+type API struct {
+	bot  *tgbotapi.BotAPI
+	conf *config.TelegramConfig
+}
 
-func Init(c *config.TelegramConfig) {
-	conf = c
-
+func Init(conf *config.TelegramConfig) *API {
 	if content, err := os.ReadFile(conf.MessageFile); err == nil || len(content) == 0 {
 		log.Fatal().
 			Err(err).
@@ -29,23 +30,27 @@ func Init(c *config.TelegramConfig) {
 	log.Info().
 		Str("user", bot.Self.UserName).
 		Msg("Connected to Telegram API")
+	return &API{
+		bot:  bot,
+		conf: conf,
+	}
 }
 
-func SendMsgString(text string) {
-	msg := tgbotapi.NewMessage(conf.ChatID, text)
+func (api *API) SendMsgString(text string) {
+	msg := tgbotapi.NewMessage(api.conf.ChatID, text)
 
-	_, e := bot.Send(msg)
+	_, e := api.bot.Send(msg)
 	if e != nil {
 		log.Err(e).Msg("Cannot send message")
 	}
 	log.Info().Msg("Msg sent")
 }
 
-func SendMsg() {
-	content, err := os.ReadFile(conf.MessageFile)
+func (api *API) SendMsg() {
+	content, err := os.ReadFile(api.conf.MessageFile)
 	if err != nil {
 		log.Err(err).Msg("Failed to send telegram message. Cannot read message file")
 		return
 	}
-	SendMsgString(string(content))
+	api.SendMsgString(string(content))
 }
