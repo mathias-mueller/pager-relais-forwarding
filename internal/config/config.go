@@ -28,6 +28,13 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("key '%s' not set", "telegram.MessageFile")
 	}
 
+	gpioSection := cfg.Section("gpio")
+	var gpioConfig = &GpioConfig{}
+	err = gpioSection.StrictMapTo(gpioConfig)
+	if err != nil {
+		return nil, fmt.Errorf("error mapping gpio config section: %+v", err)
+	}
+
 	return &Config{
 		TelegramConfig: telegramConfig,
 	}, nil
