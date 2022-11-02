@@ -31,13 +31,22 @@ func TestLoad(t *testing.T) {
 				"[telegram]\n" +
 					"ChatID = 1234567890\n" +
 					"APIToken = abcdefghijk\n" +
-					"MessageFile = message.txt",
+					"MessageFile = message.txt\n" +
+					"[gpio]\n" +
+					"Pin = 10\n" +
+					"Interval = 1000",
 			},
-			want: &Config{TelegramConfig: &TelegramConfig{
-				ChatID:      1234567890,
-				APIToken:    "abcdefghijk",
-				MessageFile: "message.txt",
-			}},
+			want: &Config{
+				TelegramConfig: &TelegramConfig{
+					ChatID:      1234567890,
+					APIToken:    "abcdefghijk",
+					MessageFile: "message.txt",
+				},
+				GpioConfig: &GpioConfig{
+					Pin:      10,
+					Interval: 1000,
+				},
+			},
 			wantErr: assert.NoError,
 		},
 		{
@@ -85,6 +94,32 @@ func TestLoad(t *testing.T) {
 				"[telegram]\n" +
 					"ChatID = 1234567890\n" +
 					"APIToken = abcdefghijk",
+			},
+			want:    nil,
+			wantErr: assert.Error,
+		},
+		{
+			name: "no gpio pin",
+			args: args{
+				"[telegram]\n" +
+					"ChatID = 1234567890\n" +
+					"APIToken = abcdefghijk\n" +
+					"MessageFile = message.txt\n" +
+					"[gpio]\n" +
+					"Interval = 1000",
+			},
+			want:    nil,
+			wantErr: assert.Error,
+		},
+		{
+			name: "no gpio interval",
+			args: args{
+				"[telegram]\n" +
+					"ChatID = 1234567890\n" +
+					"APIToken = abcdefghijk\n" +
+					"MessageFile = message.txt\n" +
+					"[gpio]\n" +
+					"Pin = 10",
 			},
 			want:    nil,
 			wantErr: assert.Error,
