@@ -37,5 +37,6 @@ func Load() (*Config, error) {
 
 	return &Config{
 		TelegramConfig: telegramConfig,
+		GpioConfig:     gpioConfig,
 	}, nil
 }
