@@ -40,6 +40,7 @@ func IsPinHigh(config *config.GpioConfig) bool {
 		Int("number", pinNumber).
 		Msg("Reading pin")
 	pin := rpio.Pin(pinNumber)
+	pin.Input()
 
 	state := pin.Read()
 	isHigh := state == rpio.High
