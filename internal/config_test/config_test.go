@@ -1,6 +1,7 @@
-package config
+package config_test
 
 import (
+	"awesomeProject1/internal/config"
 	"fmt"
 	"os"
 	"testing"
@@ -11,7 +12,7 @@ import (
 func TestLoad_nofile(t *testing.T) {
 	os.Remove("config.ini.default")
 
-	cfg, err := Load()
+	cfg, err := config.Load()
 	assert.Error(t, err)
 	assert.Nil(t, cfg)
 }
@@ -23,7 +24,7 @@ func TestLoad(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *Config
+		want    *config.Config
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
@@ -37,13 +38,13 @@ func TestLoad(t *testing.T) {
 					"Pin = 10\n" +
 					"Interval = 1000",
 			},
-			want: &Config{
-				TelegramConfig: &TelegramConfig{
+			want: &config.Config{
+				TelegramConfig: &config.TelegramConfig{
 					ChatID:      1234567890,
 					APIToken:    "abcdefghijk",
 					MessageFile: "message.txt",
 				},
-				GpioConfig: &GpioConfig{
+				GpioConfig: &config.GpioConfig{
 					Pin:      10,
 					Interval: 1000,
 				},
@@ -130,7 +131,7 @@ func TestLoad(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.NoError(t, os.WriteFile("config.ini", []byte(tt.args.config), os.ModePerm))
 			defer func() { assert.NoError(t, os.Remove("config.ini")) }()
-			got, err := Load()
+			got, err := config.Load()
 			if !tt.wantErr(t, err, fmt.Sprintf("Load(%+v)", tt.args)) {
 				return
 			}

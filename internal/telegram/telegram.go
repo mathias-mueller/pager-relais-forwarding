@@ -8,13 +8,12 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Api struct {
+type API struct {
 	bot  *tgbotapi.BotAPI
 	conf *config.TelegramConfig
 }
 
-func Init(conf *config.TelegramConfig) *Api {
-
+func Init(conf *config.TelegramConfig) *API {
 	if content, err := os.ReadFile(conf.MessageFile); err == nil || len(content) == 0 {
 		log.Fatal().
 			Err(err).
@@ -31,13 +30,13 @@ func Init(conf *config.TelegramConfig) *Api {
 	log.Info().
 		Str("user", bot.Self.UserName).
 		Msg("Connected to Telegram API")
-	return &Api{
+	return &API{
 		bot:  bot,
 		conf: conf,
 	}
 }
 
-func (api *Api) SendMsgString(text string) {
+func (api *API) SendMsgString(text string) {
 	msg := tgbotapi.NewMessage(api.conf.ChatID, text)
 
 	_, e := api.bot.Send(msg)
@@ -47,7 +46,7 @@ func (api *Api) SendMsgString(text string) {
 	log.Info().Msg("Msg sent")
 }
 
-func (api *Api) SendMsg() {
+func (api *API) SendMsg() {
 	content, err := os.ReadFile(api.conf.MessageFile)
 	if err != nil {
 		log.Err(err).Msg("Failed to send telegram message. Cannot read message file")
