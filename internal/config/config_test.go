@@ -131,7 +131,7 @@ func TestLoad(t *testing.T) {
 			assert.NoError(t, os.WriteFile("config.ini", []byte(tt.args.config), os.ModePerm))
 			defer func() { assert.NoError(t, os.Remove("config.ini")) }()
 			got, err := Load()
-			if !tt.wantErr(t, err, fmt.Sprintf("Load()")) {
+			if !tt.wantErr(t, err, fmt.Sprintf("Load(%+v)", tt.args)) {
 				return
 			}
 			assert.Equalf(t, tt.want, got, "Load()")

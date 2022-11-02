@@ -3,10 +3,11 @@ package gpio
 import (
 	"awesomeProject1/internal/config"
 
+	"time"
+
 	"github.com/rs/zerolog/log"
 	"github.com/stianeikeland/go-rpio/v4"
 )
-import "time"
 
 func Start(config *config.GpioConfig) <-chan time.Time {
 	err := rpio.Open()
@@ -14,7 +15,7 @@ func Start(config *config.GpioConfig) <-chan time.Time {
 		log.Fatal().Err(err).Msg("Failed to init GPIO library")
 	}
 
-	output := make(chan time.Time, 0)
+	output := make(chan time.Time)
 
 	ticker := time.NewTicker(time.Duration(config.Interval) * time.Millisecond)
 	done := make(chan time.Time)

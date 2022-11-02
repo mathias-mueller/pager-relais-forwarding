@@ -9,7 +9,7 @@ import (
 func Load() (*Config, error) {
 	cfg, loadErr := ini.InsensitiveLoad("config.ini")
 	if loadErr != nil {
-		return nil, fmt.Errorf("error loading config file: %+v", loadErr)
+		return nil, fmt.Errorf("error loading config file: %w", loadErr)
 	}
 
 	telegramSection := cfg.Section("telegram")
@@ -17,7 +17,7 @@ func Load() (*Config, error) {
 	var telegramConfig = &TelegramConfig{}
 	err := telegramSection.StrictMapTo(telegramConfig)
 	if err != nil {
-		return nil, fmt.Errorf("error mapping telegram config section: %+v", err)
+		return nil, fmt.Errorf("error mapping telegram config section: %w", err)
 	}
 	if telegramConfig.APIToken == "" {
 		return nil, fmt.Errorf("key '%s' not set", "telegram.APIToken")
@@ -33,7 +33,7 @@ func Load() (*Config, error) {
 	var gpioConfig = &GpioConfig{}
 	err = gpioSection.StrictMapTo(gpioConfig)
 	if err != nil {
-		return nil, fmt.Errorf("error mapping gpio config section: %+v", err)
+		return nil, fmt.Errorf("error mapping gpio config section: %w", err)
 	}
 	if gpioConfig.Pin == 0 {
 		return nil, fmt.Errorf("key '%s' not set", "gpio.Pin")

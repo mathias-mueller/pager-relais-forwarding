@@ -48,7 +48,7 @@ func sendToEndpoint(endpoint *config.HTTPConfigItem, client *http.Client) {
 		return
 	}
 	body, err := io.ReadAll(resp.Body)
-	if resp.StatusCode >= 400 {
+	if resp.StatusCode >= http.StatusBadRequest {
 		log.Error().
 			Str("url", endpoint.URL).
 			Str("method", endpoint.Method).

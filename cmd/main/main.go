@@ -22,7 +22,7 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to load config")
 	}
 
-	telegram.Init(conf.TelegramConfig)
+	telegramApi := telegram.Init(conf.TelegramConfig)
 
-	telegram.SendMsgString("Hello World")
+	telegramApi.SendMsgString("Hello World")
 }
