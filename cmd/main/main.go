@@ -3,9 +3,10 @@ package main
 import (
 	"awesomeProject1/internal/config"
 	"awesomeProject1/internal/telegram"
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 func main() {

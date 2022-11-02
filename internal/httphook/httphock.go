@@ -2,10 +2,11 @@ package httphook
 
 import (
 	"awesomeProject1/internal/config"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/rs/zerolog/log"
 )
 
 func Send(conf *config.HttpConfig, client *http.Client) {

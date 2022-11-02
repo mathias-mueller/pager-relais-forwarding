@@ -2,6 +2,7 @@ package gpio
 
 import (
 	"awesomeProject1/internal/config"
+
 	"github.com/rs/zerolog/log"
 	"github.com/stianeikeland/go-rpio/v4"
 )

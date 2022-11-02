@@ -2,9 +2,10 @@ package telegram
 
 import (
 	"awesomeProject1/internal/config"
+	"os"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 var bot *tgbotapi.BotAPI
