@@ -135,7 +135,6 @@ func TestLoad(t *testing.T) {
 				return
 			}
 			assert.Equalf(t, tt.want, got, "Load()")
-
 		})
 	}
 }

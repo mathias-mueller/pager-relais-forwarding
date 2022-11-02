@@ -4,19 +4,19 @@ import (
 	"awesomeProject1/internal/config"
 	"io"
 	"net/http"
-	"net/url"
+	neturl "net/url"
 
 	"github.com/rs/zerolog/log"
 )
 
-func Send(conf *config.HttpConfig, client *http.Client) {
+func Send(conf *config.HTTPConfig, client *http.Client) {
 	for _, endpoint := range conf.Endpoints {
 		go sendToEndpoint(endpoint, client)
 	}
 }
 
-func sendToEndpoint(endpoint *config.HttpConfigItem, client *http.Client) {
-	URL, err := url.Parse(endpoint.URL)
+func sendToEndpoint(endpoint *config.HTTPConfigItem, client *http.Client) {
+	url, err := neturl.Parse(endpoint.URL)
 	if err != nil {
 		log.Err(err).
 			Str("url", endpoint.URL).
@@ -24,7 +24,7 @@ func sendToEndpoint(endpoint *config.HttpConfigItem, client *http.Client) {
 	}
 	req := &http.Request{
 		Method: endpoint.Method,
-		URL:    URL,
+		URL:    url,
 	}
 	log.Info().
 		Str("url", endpoint.URL).
