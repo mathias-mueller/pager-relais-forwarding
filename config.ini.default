@@ -1,3 +1,8 @@
 [telegram]
 chatID = -1001291996707
 APIToken = 1178467114:AAEZQ8oWqMekE0j9e8Jry2ouKq42t2POnZU
+MessageFile = msg.txt
+
+[gpio]
+Pin = 17
+Interval = 1000

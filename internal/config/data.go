@@ -12,7 +12,8 @@ type TelegramConfig struct {
 }
 
 type GpioConfig struct {
-	Pin int
+	Pin      int
+	Interval int
 }
 
 type HttpConfig struct {

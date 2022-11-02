@@ -34,6 +34,12 @@ func Load() (*Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error mapping gpio config section: %+v", err)
 	}
+	if gpioConfig.Pin == 0 {
+		return nil, fmt.Errorf("key '%s' not set", "gpio.Pin")
+	}
+	if gpioConfig.Interval <= 0 {
+		return nil, fmt.Errorf("key '%s' not set", "gpio.Interval")
+	}
 
 	return &Config{
 		TelegramConfig: telegramConfig,

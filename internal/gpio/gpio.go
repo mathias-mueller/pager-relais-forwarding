@@ -15,7 +15,7 @@ func Start(config *config.GpioConfig) <-chan time.Time {
 
 	output := make(chan time.Time, 0)
 
-	ticker := time.NewTicker(1000 * time.Millisecond)
+	ticker := time.NewTicker(time.Duration(config.Interval) * time.Millisecond)
 	done := make(chan time.Time)
 	go func() {
 		for {
