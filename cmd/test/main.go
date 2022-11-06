@@ -11,6 +11,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const timeoutDuration = 10
+
 func main() {
 	log.Logger = log.Output(
 		zerolog.ConsoleWriter{
@@ -37,5 +39,5 @@ func main() {
 
 	inputs <- true
 
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * timeoutDuration)
 }

@@ -61,7 +61,3 @@ func (api *API) SendMsg() {
 	log.Info().Msg("Sending message")
 	api.SendMsgString(string(content))
 }
-
-func (api *API) activate() {
-	api.SendMsg()
-}
