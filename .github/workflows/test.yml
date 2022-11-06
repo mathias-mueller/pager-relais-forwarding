@@ -31,6 +31,7 @@ jobs:
       - name: display coverage
         run: go tool cover -func c.out
       - name: "pull request comment"
+        if: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
