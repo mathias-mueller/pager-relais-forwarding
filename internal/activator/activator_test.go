@@ -1,6 +1,7 @@
 package activator
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -9,9 +10,12 @@ import (
 
 type testActivation struct {
 	count int
+	lock  sync.Mutex
 }
 
 func (a *testActivation) activate() {
+	a.lock.Lock()
+	defer a.lock.Unlock()
 	a.count++
 }
 
@@ -62,6 +66,7 @@ func TestActivator_EnableActivation(t *testing.T) {
 			testChan := make(chan bool)
 			t2 := &testActivation{
 				count: 0,
+				lock:  sync.Mutex{},
 			}
 			defer close(testChan)
 			go activator.EnableActivation(
@@ -72,6 +77,8 @@ func TestActivator_EnableActivation(t *testing.T) {
 				testChan <- i
 			}
 			assert.Eventually(t, func() bool {
+				t2.lock.Lock()
+				defer t2.lock.Unlock()
 				return tt.want == t2.count
 			},
 				time.Millisecond*100,
