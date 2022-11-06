@@ -9,26 +9,25 @@ import (
 	"github.com/stianeikeland/go-rpio/v4"
 )
 
-func Start(config *config.GpioConfig) <-chan time.Time {
+func Start(config *config.GpioConfig) <-chan bool {
 	err := rpio.Open()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to init GPIO library")
 	}
 
-	output := make(chan time.Time)
+	output := make(chan bool)
 
 	ticker := time.NewTicker(time.Duration(config.Interval) * time.Millisecond)
 	done := make(chan time.Time)
 	go func() {
+		defer close(output)
 		for {
 			select {
 			case <-done:
 				return
 			case <-ticker.C:
 				go func() {
-					if IsPinHigh(config) {
-						output <- time.Now()
-					}
+					output <- IsPinHigh(config)
 				}()
 			}
 		}

@@ -1,13 +1,17 @@
 package main
 
 import (
+	"awesomeProject1/internal/activator"
 	"awesomeProject1/internal/config"
-	"awesomeProject1/internal/gpio"
+	"awesomeProject1/internal/telegram"
 	"os"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
+
+const timeoutDuration = 10
 
 func main() {
 	log.Logger = log.Output(
@@ -21,12 +25,19 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load config")
 	}
+	a := activator.New()
+	telegramAPI := telegram.Init(conf.TelegramConfig)
 
-	actuations := gpio.Start(conf.GpioConfig)
+	inputs := make(chan bool)
+	defer close(inputs)
 
-	for actuation := range actuations {
-		log.Info().
-			Time("time", actuation).
-			Msg("Actuation")
-	}
+	go a.EnableActivation(inputs,
+		[]activator.Activation{
+			&activator.TelegramActivation{API: telegramAPI},
+		},
+	)
+
+	inputs <- true
+
+	time.Sleep(time.Second * timeoutDuration)
 }
