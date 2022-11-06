@@ -14,10 +14,11 @@ type API struct {
 }
 
 func Init(conf *config.TelegramConfig) *API {
-	if content, err := os.ReadFile(conf.MessageFile); err == nil || len(content) == 0 {
+	if content, err := os.ReadFile(conf.MessageFile); err != nil || len(content) == 0 {
 		log.Fatal().
 			Err(err).
 			Str("file", conf.MessageFile).
+			Bytes("content", content).
 			Msg("Error reading message file or file is empty")
 	}
 
@@ -47,10 +48,20 @@ func (api *API) SendMsgString(text string) {
 }
 
 func (api *API) SendMsg() {
+	log.Info().
+		Str("file", api.conf.MessageFile).
+		Msg("Sending Telegram message from file")
 	content, err := os.ReadFile(api.conf.MessageFile)
 	if err != nil {
-		log.Err(err).Msg("Failed to send telegram message. Cannot read message file")
+		log.Err(err).
+			Str("file", api.conf.MessageFile).
+			Msg("Failed to send telegram message. Cannot read message file")
 		return
 	}
+	log.Info().Msg("Sending message")
 	api.SendMsgString(string(content))
+}
+
+func (api *API) activate() {
+	api.SendMsg()
 }

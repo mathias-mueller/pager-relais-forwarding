@@ -1,7 +1,9 @@
 package main
 
 import (
+	"awesomeProject1/internal/activator"
 	"awesomeProject1/internal/config"
+	"awesomeProject1/internal/gpio"
 	"awesomeProject1/internal/telegram"
 	"os"
 
@@ -21,8 +23,14 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load config")
 	}
-
+	a := activator.New()
 	telegramAPI := telegram.Init(conf.TelegramConfig)
 
-	telegramAPI.SendMsgString("Hello World")
+	rawGpioValues := gpio.Start(conf.GpioConfig)
+
+	a.EnableActivation(rawGpioValues,
+		[]activator.Activation{
+			&activator.TelegramActivation{API: telegramAPI},
+		},
+	)
 }
