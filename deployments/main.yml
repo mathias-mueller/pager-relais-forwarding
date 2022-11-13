@@ -1,0 +1,53 @@
+---
+- name: create Group
+  group:
+    name: pager_forwarding
+    state: present
+
+- name: create User
+  user:
+    name: pager_forwarding
+    groups: pager_forwarding
+    shell: /sbin/nologin
+    append: yes
+    state: present
+    create_home: no
+
+- name: Copy systemd service file to server
+  copy:
+    src: resources/pager-forwarding.service
+    dest: /etc/systemd/system
+    owner: root
+    group: root
+  notify:
+    - Start Service
+
+- name: Copy src to server
+  copy:
+    src: ..
+    dest: /usr/local/pager-forwarding/build
+    owner: root
+    group: root
+  notify:
+    - Build Service
+
+- name: Build Service
+  command: go build -o ../main cmd/main.go
+  args:
+    chdir: /usr/local/pager-forwarding/build
+  notify:
+    - Copy resources
+
+- name: Copy resources
+  command: cp deployments/resources/config.ini deployments/resources/message.txt ..
+  args:
+    chdir: /usr/local/pager-forwarding/build
+  notify:
+    - Start Service
+
+---
+- name: Start Service
+  systemd:
+    name: pager_forwarding
+    state: started
+    enabled: yes
