@@ -24,7 +24,7 @@
 
 - name: Download Compiled Service
   ansible.builtin.get_url:
-    url: http://example.com/path/file.conf
+    url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
     dest: /usr/pager-forwarding/main
     mode: '0777'
   notify:
