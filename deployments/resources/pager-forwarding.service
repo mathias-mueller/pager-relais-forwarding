@@ -4,4 +4,4 @@ Description=Pager Relais Forwarding Service
 [Service]
 User=pager_forwarding
 Group=pager_forwarding
-ExecStart=/usr/pager-forwarding/main
+ExecStart=/usr/local/pager-forwarding/main
