@@ -52,6 +52,6 @@
   tasks:
   - name: Start Service
     ansible.builtin.systemd:
-      name: pager_forwarding
+      name: pager-forwarding
       state: started
       enabled: yes
