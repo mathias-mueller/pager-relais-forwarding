@@ -1,11 +1,10 @@
----
 - name: create Group
-  group:
+  ansible.builtin.group:
     name: pager_forwarding
     state: present
 
 - name: create User
-  user:
+  ansible.builtin.user:
     name: pager_forwarding
     groups: pager_forwarding
     shell: /sbin/nologin
@@ -14,7 +13,7 @@
     create_home: no
 
 - name: Copy systemd service file to server
-  copy:
+  ansible.builtin.copy:
     src: resources/pager-forwarding.service
     dest: /etc/systemd/system
     owner: root
@@ -31,7 +30,7 @@
     - Start Service
 
 - name: Copy Config
-  copy:
+  ansible.builtin.copy:
     src: deployments/resources/config.ini
     dest: /usr/local/pager-forwarding/build/config.ini
     owner: root
@@ -40,7 +39,7 @@
     - Start Service
 
 - name: Copy Message file
-  copy:
+  ansible.builtin.copy:
     src: deployments/resources/message.txt
     dest: /usr/local/pager-forwarding/build/message.txt
     owner: root
@@ -48,9 +47,8 @@
   notify:
     - Start Service
 
----
 - name: Start Service
-  systemd:
+  ansible.builtin.systemd:
     name: pager_forwarding
     state: started
     enabled: yes

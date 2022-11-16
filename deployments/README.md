@@ -13,9 +13,9 @@ See: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
 ## 2. Check if servers are reachable
 
 ```shell
-ansible all --list-hosts
+ansible -i inventory.yaml all --list-hosts
 
-ansible all -m ping
+ansible -i inventory.yaml all -m ping
 
 ```
 
@@ -29,5 +29,5 @@ In `resources/message.txt` define the telegram message to be sent out.
 ## 3. Build & Deploy service
 
 ```shell
-ansible-playbook -i hosts main.yml
+ansible-playbook -i inventory.yaml main.yml
 ```
