@@ -3,6 +3,6 @@ Description=Pager Relais Forwarding Service
 
 [Service]
 User=pager_forwarding
-Group=pager_forwarding
+Group=gpio
 ExecStart=/usr/local/pager-forwarding/main
 WorkingDirectory=/usr/local/pager-forwarding

@@ -1,15 +1,11 @@
-- name: Setup User & Group
+- name: Setup User
   hosts: all
   become: true
   tasks:
-    - name: create Group
-      group:
-        name: pager_forwarding
-        state: present
     - name: create User
       user:
         name: pager_forwarding
-        groups: pager_forwarding
+        groups: gpio
         shell: /sbin/nologin
         append: yes
         state: present
