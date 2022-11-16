@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: ['amd64'] #, 'arm', 'arm64', 'armv7l']
+        os: ['amd64', 'arm', 'arm64', 'armv7l']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,13 +29,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v2
-        with:
-          name: pager-relais-forwarding_amd64
+      - name: Display structure
+        run: ls -R
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          files: pager-relais-forwarding_amd64
+          files: |
+            pager-relais-forwarding_amd64/pager-relais-forwarding_amd64
+            pager-relais-forwarding_arm/pager-relais-forwarding_arm
+            pager-relais-forwarding_arm64/pager-relais-forwarding_arm64
+            pager-relais-forwarding_armv7l/pager-relais-forwarding_armv7l
           
           
 
