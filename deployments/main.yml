@@ -32,7 +32,7 @@
   - name: Download Compiled Service
     get_url:
       url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
-      dest: /usr/pager-forwarding/main
+      dest: /usr/local/pager-forwarding/main
       mode: '0777'
   - name: Copy Config
     ansible.builtin.copy:
