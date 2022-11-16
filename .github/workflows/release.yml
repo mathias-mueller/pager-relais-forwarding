@@ -25,7 +25,7 @@ jobs:
           name: pager-relais-forwarding_${{matrix.os}}
           path: pager-relais-forwarding_${{matrix.os}}
   release:
-    runs-on:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v2
