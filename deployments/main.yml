@@ -53,6 +53,6 @@
   - name: Start Service
     ansible.builtin.systemd:
       name: pager-forwarding
-      state: started
+      state: restarted
       enabled: yes
       daemon_reload: true
