@@ -3,19 +3,34 @@ name: "pre-release"
 on:
   push:
     branches:
-      - "main"
+      - main
 
 jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ 'amd64', 'arm', 'arm64' ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '1.18'
+          cache: true
+      - name: "Version"
+        run: go version
+      - name: Build
+        run: env GOOS=linux GOARCH=${{matrix.os}} go build -o pager-relais-forwarding_${{matrix.os}} cmd/main/main.go
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pager-relais-forwarding_${{matrix.os}}
+          path: pager-relais-forwarding_${{matrix.os}}
   pre-release:
     name: "Pre Release"
     runs-on: "ubuntu-latest"
-
     steps:
-      # ...
-      - name: "Build & test"
-        run: |
-          echo "done!"
-
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v2
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -23,5 +38,6 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            LICENSE.txt
-            *.jar
+            pager-relais-forwarding_amd64/pager-relais-forwarding_amd64
+            pager-relais-forwarding_arm/pager-relais-forwarding_arm
+            pager-relais-forwarding_arm64/pager-relais-forwarding_arm64
