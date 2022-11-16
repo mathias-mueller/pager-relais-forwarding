@@ -16,9 +16,9 @@
         create_home: no
 - name: Setup files
   hosts: all
+  become: true
   tasks:
   - name: Copy systemd service file to server
-    become: true
     copy:
       src: resources/pager-forwarding.service
       dest: /etc/systemd/system
