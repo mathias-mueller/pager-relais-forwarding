@@ -19,6 +19,13 @@ ansible all -m ping
 
 ```
 
+## 3. Create configuration
+
+In `resources/config.ini` create  a valid configuration.
+See `config.ini.default` in the root directory for an example.
+
+In `resources/message.txt` define the telegram message to be sent out.
+
 ## 3. Build & Deploy service
 
 ```shell
