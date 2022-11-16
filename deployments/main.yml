@@ -1,4 +1,5 @@
 - name: Setup User & Group
+  hosts: all
   tasks:
     - name: create Group
       group:
@@ -13,6 +14,7 @@
         state: present
         create_home: no
 - name: Setup files
+  hosts: all
   tasks:
   - name: Copy systemd service file to server
     ansible.builtin.copy:
@@ -38,6 +40,7 @@
       owner: root
       group: root
 - name: Start
+  hosts: all
   tasks:
   - name: Start Service
     ansible.builtin.systemd:
