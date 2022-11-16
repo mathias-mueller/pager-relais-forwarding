@@ -55,3 +55,4 @@
       name: pager-forwarding
       state: started
       enabled: yes
+      daemon_reload: true

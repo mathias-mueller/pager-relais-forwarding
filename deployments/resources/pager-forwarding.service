@@ -5,4 +5,4 @@ Description=Pager Relais Forwarding Service
 User=pager_forwarding
 Group=pager_forwarding
 ExecStart=/usr/local/pager-forwarding/main
-WorkingDirectory==/usr/local/pager-forwarding
+WorkingDirectory=/usr/local/pager-forwarding
