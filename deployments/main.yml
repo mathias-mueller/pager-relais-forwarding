@@ -18,6 +18,7 @@
   hosts: all
   tasks:
   - name: Copy systemd service file to server
+    become: true
     ansible.builtin.copy:
       src: resources/pager-forwarding.service
       dest: /etc/systemd/system
@@ -42,6 +43,7 @@
       group: root
 - name: Start
   hosts: all
+  become: true
   tasks:
   - name: Start Service
     ansible.builtin.systemd:
