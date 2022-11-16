@@ -27,8 +27,8 @@
   - name: Create Directory
     file:
       path: /usr/local/pager-forwarding
-    state: directory
-    mode: '0755'
+      state: directory
+      mode: '0755'
   - name: Download Compiled Service
     get_url:
       url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
