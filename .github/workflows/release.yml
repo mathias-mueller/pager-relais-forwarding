@@ -20,12 +20,22 @@ jobs:
         run: go version
       - name: Build
         run: env GOOS=linux GOARCH=${{matrix.os}} go build -o pager-relais-forwarding_{{matrix.os}} cmd/main/main.go
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pager-relais-forwarding_${{matrix.os}}
+          path: pager-relais-forwarding_${{matrix.os}}
+  release:
+    runs-on:
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v2
+        with:
+          name: pager-relais-forwarding_amd64
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          files: |
-            pager-relais-forwarding_{{matrix.os}}
+          files: pager-relais-forwarding_amd64
           
           
 
