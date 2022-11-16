@@ -1,54 +1,46 @@
-- name: create Group
-  ansible.builtin.group:
-    name: pager_forwarding
-    state: present
-
-- name: create User
-  ansible.builtin.user:
-    name: pager_forwarding
-    groups: pager_forwarding
-    shell: /sbin/nologin
-    append: yes
-    state: present
-    create_home: no
-
-- name: Copy systemd service file to server
-  ansible.builtin.copy:
-    src: resources/pager-forwarding.service
-    dest: /etc/systemd/system
-    owner: root
-    group: root
-  notify:
-    - Start Service
-
-- name: Download Compiled Service
-  ansible.builtin.get_url:
-    url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
-    dest: /usr/pager-forwarding/main
-    mode: '0777'
-  notify:
-    - Start Service
-
-- name: Copy Config
-  ansible.builtin.copy:
-    src: deployments/resources/config.ini
-    dest: /usr/local/pager-forwarding/build/config.ini
-    owner: root
-    group: root
-  notify:
-    - Start Service
-
-- name: Copy Message file
-  ansible.builtin.copy:
-    src: deployments/resources/message.txt
-    dest: /usr/local/pager-forwarding/build/message.txt
-    owner: root
-    group: root
-  notify:
-    - Start Service
-
-- name: Start Service
-  ansible.builtin.systemd:
-    name: pager_forwarding
-    state: started
-    enabled: yes
+- name: Setup User & Group
+  tasks:
+    - name: create Group
+      group:
+        name: pager_forwarding
+        state: present
+    - name: create User
+      user:
+        name: pager_forwarding
+        groups: pager_forwarding
+        shell: /sbin/nologin
+        append: yes
+        state: present
+        create_home: no
+- name: Setup files
+  tasks:
+  - name: Copy systemd service file to server
+    ansible.builtin.copy:
+      src: resources/pager-forwarding.service
+      dest: /etc/systemd/system
+      owner: root
+      group: root
+  - name: Download Compiled Service
+    ansible.builtin.get_url:
+      url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
+      dest: /usr/pager-forwarding/main
+      mode: '0777'
+  - name: Copy Config
+    ansible.builtin.copy:
+      src: deployments/resources/config.ini
+      dest: /usr/local/pager-forwarding/build/config.ini
+      owner: root
+      group: root
+  - name: Copy Message file
+    ansible.builtin.copy:
+      src: deployments/resources/message.txt
+      dest: /usr/local/pager-forwarding/build/message.txt
+      owner: root
+      group: root
+- name: Start
+  tasks:
+  - name: Start Service
+    ansible.builtin.systemd:
+      name: pager_forwarding
+      state: started
+      enabled: yes
