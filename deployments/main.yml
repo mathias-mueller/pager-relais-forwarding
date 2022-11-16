@@ -22,26 +22,29 @@
   notify:
     - Start Service
 
-- name: Copy src to server
+- name: Download Compiled Service
+  ansible.builtin.get_url:
+    url: http://example.com/path/file.conf
+    dest: /usr/pager-forwarding/main
+    mode: '0777'
+  notify:
+    - Start Service
+
+- name: Copy Config
   copy:
-    src: ..
-    dest: /usr/local/pager-forwarding/build
+    src: deployments/resources/config.ini
+    dest: /usr/local/pager-forwarding/build/config.ini
     owner: root
     group: root
   notify:
-    - Build Service
+    - Start Service
 
-- name: Build Service
-  command: go build -o ../main cmd/main.go
-  args:
-    chdir: /usr/local/pager-forwarding/build
-  notify:
-    - Copy resources
-
-- name: Copy resources
-  command: cp deployments/resources/config.ini deployments/resources/message.txt ..
-  args:
-    chdir: /usr/local/pager-forwarding/build
+- name: Copy Message file
+  copy:
+    src: deployments/resources/message.txt
+    dest: /usr/local/pager-forwarding/build/message.txt
+    owner: root
+    group: root
   notify:
     - Start Service
 
