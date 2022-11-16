@@ -36,13 +36,13 @@
       mode: '0777'
   - name: Copy Config
     ansible.builtin.copy:
-      src: deployments/resources/config.ini
+      src: resources/config.ini
       dest: /usr/local/pager-forwarding/config.ini
       owner: root
       group: root
   - name: Copy Message file
     ansible.builtin.copy:
-      src: deployments/resources/message.txt
+      src: resources/message.txt
       dest: /usr/local/pager-forwarding/message.txt
       owner: root
       group: root
