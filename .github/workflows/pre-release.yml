@@ -26,6 +26,7 @@ jobs:
           name: pager-relais-forwarding_${{matrix.os}}
           path: pager-relais-forwarding_${{matrix.os}}
   pre-release:
+    needs: build
     name: "Pre Release"
     runs-on: "ubuntu-latest"
     steps:
