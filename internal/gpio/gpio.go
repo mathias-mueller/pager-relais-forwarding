@@ -5,6 +5,8 @@ import (
 
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/rs/zerolog/log"
 	"github.com/stianeikeland/go-rpio/v4"
 )
@@ -17,6 +19,11 @@ func Start(config *config.GpioConfig) <-chan bool {
 
 	output := make(chan bool)
 
+	gpioProcessed := promauto.NewCounter(prometheus.CounterOpts{
+		Name: "pager_forwarding_gpio_checks",
+		Help: "The total number of gpio checks",
+	})
+
 	ticker := time.NewTicker(time.Duration(config.Interval) * time.Millisecond)
 	done := make(chan time.Time)
 	go func() {
@@ -27,6 +34,7 @@ func Start(config *config.GpioConfig) <-chan bool {
 				return
 			case <-ticker.C:
 				go func() {
+					gpioProcessed.Inc()
 					output <- IsPinHigh(config)
 				}()
 			}

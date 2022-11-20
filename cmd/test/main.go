@@ -4,9 +4,10 @@ import (
 	"awesomeProject1/internal/activator"
 	"awesomeProject1/internal/config"
 	"awesomeProject1/internal/telegram"
+	"net/http"
 	"os"
-	"time"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -38,6 +39,9 @@ func main() {
 	)
 
 	inputs <- true
-
-	time.Sleep(time.Second * timeoutDuration)
+	http.Handle("/metrics", promhttp.Handler())
+	err = http.ListenAndServe(":2112", nil)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Server failed")
+	}
 }
