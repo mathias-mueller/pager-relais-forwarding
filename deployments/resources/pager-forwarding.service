@@ -1,6 +1,6 @@
 [Unit]
 Description=Pager Relais Forwarding Service
-After=systemd-networkd-wait-online.service
+After=network-online.target
 Wants=network-online.target
 
 [Service]
