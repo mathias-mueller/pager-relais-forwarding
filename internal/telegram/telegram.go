@@ -3,6 +3,7 @@ package telegram
 import (
 	"awesomeProject1/internal/config"
 	"os"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/rs/zerolog/log"
@@ -21,8 +22,18 @@ func Init(conf *config.TelegramConfig) *API {
 			Bytes("content", content).
 			Msg("Error reading message file or file is empty")
 	}
-
-	bot, err := tgbotapi.NewBotAPI(conf.APIToken)
+	remainingTries := 3
+	var bot *tgbotapi.BotAPI
+	var err error
+	for remainingTries > 0 {
+		bot, err = tgbotapi.NewBotAPI(conf.APIToken)
+		if err == nil {
+			break
+		}
+		log.Warn().Err(err).Msg("Cannot connect to TelegramAPI. Retrying after delay...")
+		remainingTries--
+		time.Sleep(time.Second * 10)
+	}
 	if err != nil {
 		log.Fatal().Err(err).Msg("Cannot connect to Telegram API")
 	}
