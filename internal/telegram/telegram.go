@@ -11,6 +11,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const retryDelay = time.Second * 10
+const retryLimit = 3
+
 type API struct {
 	bot       *tgbotapi.BotAPI
 	conf      *config.TelegramConfig
@@ -26,8 +29,18 @@ func Init(conf *config.TelegramConfig) *API {
 			Bytes("content", content).
 			Msg("Error reading message file or file is empty")
 	}
-
-	bot, err := tgbotapi.NewBotAPI(conf.APIToken)
+	remainingTries := retryLimit
+	var bot *tgbotapi.BotAPI
+	var err error
+	for remainingTries > 0 {
+		bot, err = tgbotapi.NewBotAPI(conf.APIToken)
+		if err == nil {
+			break
+		}
+		log.Warn().Err(err).Msg("Cannot connect to TelegramAPI. Retrying after delay...")
+		remainingTries--
+		time.Sleep(retryDelay)
+	}
 	if err != nil {
 		log.Fatal().Err(err).Msg("Cannot connect to Telegram API")
 	}
