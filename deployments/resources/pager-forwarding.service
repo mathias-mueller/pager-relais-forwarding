@@ -8,6 +8,8 @@ User=pager_forwarding
 Group=gpio
 ExecStart=/usr/local/pager-forwarding/main
 WorkingDirectory=/usr/local/pager-forwarding
+Restart=always
+RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
