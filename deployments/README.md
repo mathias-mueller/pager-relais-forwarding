@@ -15,7 +15,7 @@ See: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
 ```shell
 ansible -i inventory.yaml all --list-hosts
 
-ansible -i inventory.yaml all -m ping
+ansible -i inventory.yaml all --ask-pass -u <user> -m ping
 
 ```
 
@@ -29,5 +29,5 @@ In `resources/message.txt` define the telegram message to be sent out.
 ## 3. Build & Deploy service
 
 ```shell
-ansible-playbook -i inventory.yaml main.yml
+ansible-playbook -i inventory.yaml --ask-pass -u <user> main.yml
 ```
