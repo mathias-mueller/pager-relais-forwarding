@@ -5,10 +5,12 @@
       ansible.builtin.file:
         path: /tmp/prometheus
         state: directory
+        mode: '0755'
     - name: Create Prometheus dir
       ansible.builtin.file:
         path: /usr/local/prometheus
         state: directory
+        mode: '0755'
     - name: Download Tar
       ansible.builtin.unarchive:
         src: https://github.com/prometheus/prometheus/releases/download/v2.22.0/prometheus-2.22.0.linux-armv7.tar.gz
@@ -19,6 +21,7 @@
         remote_src: true
         src: /tmp/prometheus/prometheus-2.22.0.linux-armv7
         dest: /usr/local/prometheus
+        mode: '0777'
     - name: Remove temp
       ansible.builtin.file:
         path: /tmp/prometheus
@@ -30,6 +33,7 @@
       ansible.builtin.copy:
         src: resources/prometheus.service
         dest: /etc/systemd/system
+        mode: '0777'
     - name: Start Prometheus Service
       ansible.builtin.service:
         name: prometheus
