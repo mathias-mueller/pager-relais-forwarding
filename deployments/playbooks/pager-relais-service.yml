@@ -3,7 +3,7 @@
   become: true
   tasks:
     - name: Create User
-      user:
+      ansible.builtin.user:
         name: pager_forwarding
         groups: gpio
         shell: /sbin/nologin
@@ -20,6 +20,7 @@
         dest: /etc/systemd/system
         owner: root
         group: root
+        mode: '0755'
     - name: Create Directory
       ansible.builtin.file:
         path: /usr/local/pager-forwarding
@@ -36,12 +37,14 @@
         dest: /usr/local/pager-forwarding/config.ini
         owner: root
         group: root
+        mode: '0755'
     - name: Copy Message file
       ansible.builtin.copy:
         src: resources/message.txt
         dest: /usr/local/pager-forwarding/message.txt
         owner: root
         group: root
+        mode: '0755'
 - name: Start
   hosts: all
   become: true
