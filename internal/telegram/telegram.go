@@ -6,6 +6,8 @@ import (
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/rs/zerolog/log"
 )
 
@@ -13,8 +15,10 @@ const retryDelay = time.Second * 10
 const retryLimit = 3
 
 type API struct {
-	bot  *tgbotapi.BotAPI
-	conf *config.TelegramConfig
+	bot       *tgbotapi.BotAPI
+	conf      *config.TelegramConfig
+	counter   prometheus.Counter
+	histogram prometheus.Histogram
 }
 
 func Init(conf *config.TelegramConfig) *API {
@@ -48,10 +52,21 @@ func Init(conf *config.TelegramConfig) *API {
 	return &API{
 		bot:  bot,
 		conf: conf,
+		counter: promauto.NewCounter(prometheus.CounterOpts{
+			Name: "pager_forwarding_telegram_messages_total",
+			Help: "The total number of telegram messages sent",
+		}),
+		histogram: promauto.NewHistogram(prometheus.HistogramOpts{
+			Name: "pager_forwarding_telegram_messages_duration_sum",
+			Help: "The total time while sending telegram messages",
+		}),
 	}
 }
 
 func (api *API) SendMsgString(text string) {
+	api.counter.Inc()
+	timer := prometheus.NewTimer(api.histogram)
+	defer timer.ObserveDuration()
 	msg := tgbotapi.NewMessage(api.conf.ChatID, text)
 
 	_, e := api.bot.Send(msg)

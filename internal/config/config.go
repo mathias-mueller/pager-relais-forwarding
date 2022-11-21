@@ -11,11 +11,24 @@ func Load() (*Config, error) {
 	if loadErr != nil {
 		return nil, fmt.Errorf("error loading config file: %w", loadErr)
 	}
+	generalSection := cfg.Section("general")
+
+	var generalConfig = &GeneralConfig{}
+	err := generalSection.StrictMapTo(generalConfig)
+	if err != nil {
+		return nil, fmt.Errorf("error mapping telegram config section: %w", err)
+	}
+	if generalConfig.LogLevel == "" {
+		return nil, fmt.Errorf("key '%s' not set", "general.LogLevel")
+	}
+	if generalConfig.MetricsPort == 0 {
+		return nil, fmt.Errorf("key '%s' not set", "general.MetricsPort")
+	}
 
 	telegramSection := cfg.Section("telegram")
 
 	var telegramConfig = &TelegramConfig{}
-	err := telegramSection.StrictMapTo(telegramConfig)
+	err = telegramSection.StrictMapTo(telegramConfig)
 	if err != nil {
 		return nil, fmt.Errorf("error mapping telegram config section: %w", err)
 	}
@@ -43,6 +56,7 @@ func Load() (*Config, error) {
 	}
 
 	return &Config{
+		GeneralConfig:  generalConfig,
 		TelegramConfig: telegramConfig,
 		GpioConfig:     gpioConfig,
 	}, nil

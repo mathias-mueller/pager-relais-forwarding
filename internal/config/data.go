@@ -1,8 +1,14 @@
 package config
 
 type Config struct {
+	GeneralConfig  *GeneralConfig
 	TelegramConfig *TelegramConfig
 	GpioConfig     *GpioConfig
+}
+
+type GeneralConfig struct {
+	MetricsPort int64
+	LogLevel    string
 }
 
 type TelegramConfig struct {

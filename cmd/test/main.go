@@ -4,14 +4,14 @@ import (
 	"awesomeProject1/internal/activator"
 	"awesomeProject1/internal/config"
 	"awesomeProject1/internal/telegram"
+	"net/http"
 	"os"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
-
-const timeoutDuration = 10
 
 func main() {
 	log.Logger = log.Output(
@@ -23,7 +23,8 @@ func main() {
 
 	conf, err := config.Load()
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to load config")
+		log.Err(err).Msg("failed to load config")
+		os.Exit(1)
 	}
 	a := activator.New()
 	telegramAPI := telegram.Init(conf.TelegramConfig)
@@ -38,6 +39,16 @@ func main() {
 	)
 
 	inputs <- true
+	handler := http.NewServeMux()
+	handler.Handle("/metrics", promhttp.Handler())
+	server := &http.Server{
+		Addr:              ":2112",
+		ReadHeaderTimeout: time.Second,
+		Handler:           handler,
+	}
 
-	time.Sleep(time.Second * timeoutDuration)
+	err = server.ListenAndServe()
+	if err != nil {
+		log.Err(err).Msg("Server failed")
+	}
 }
