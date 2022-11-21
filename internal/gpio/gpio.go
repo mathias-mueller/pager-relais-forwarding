@@ -19,7 +19,7 @@ func Start(config *config.GpioConfig) <-chan bool {
 
 	output := make(chan bool)
 
-	gpioProcessed := promauto.NewCounter(prometheus.CounterOpts{
+	gpioProcessed := promauto.NewHistogram(prometheus.HistogramOpts{
 		Name: "pager_forwarding_gpio_checks",
 		Help: "The total number of gpio checks",
 	})
@@ -34,8 +34,10 @@ func Start(config *config.GpioConfig) <-chan bool {
 				return
 			case <-ticker.C:
 				go func() {
-					gpioProcessed.Inc()
+					begin := time.Now()
 					output <- IsPinHigh(config)
+					end := time.Now()
+					gpioProcessed.Observe(float64(end.Sub(begin).Milliseconds()))
 				}()
 			}
 		}

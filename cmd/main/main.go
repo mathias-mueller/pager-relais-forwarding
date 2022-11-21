@@ -5,9 +5,9 @@ import (
 	"awesomeProject1/internal/config"
 	"awesomeProject1/internal/gpio"
 	"awesomeProject1/internal/telegram"
-	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
@@ -23,13 +23,16 @@ func main() {
 
 	conf, err := config.Load()
 	if err != nil {
-		fmt.Printf("error loading config: %+v\n", err)
+		log.Err(err).Msg("Could not load config")
 		os.Exit(1)
 	}
 	var level zerolog.Level
 	level, err = zerolog.ParseLevel(conf.GeneralConfig.LogLevel)
 	if err != nil {
-		fmt.Printf("Could not parse log level '%s', using INFO", conf.GeneralConfig.LogLevel)
+		log.Warn().
+			Err(err).
+			Str("wanted", conf.GeneralConfig.LogLevel).
+			Msg("Could not parse log level, using INFO")
 		level = zerolog.InfoLevel
 	}
 	zerolog.SetGlobalLevel(level)
@@ -48,8 +51,15 @@ func main() {
 		log.Fatal().Msg("Activation ended")
 	}()
 
-	http.Handle("/metrics", promhttp.Handler())
-	err = http.ListenAndServe(":2112", nil)
+	handler := http.NewServeMux()
+	handler.Handle("/metrics", promhttp.Handler())
+	server := &http.Server{
+		Addr:              ":2112",
+		ReadHeaderTimeout: time.Second,
+		Handler:           handler,
+	}
+
+	err = server.ListenAndServe()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Server failed")
 	}

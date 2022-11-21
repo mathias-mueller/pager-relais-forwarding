@@ -12,8 +12,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const timeoutDuration = 10
-
 func main() {
 	log.Logger = log.Output(
 		zerolog.ConsoleWriter{
@@ -24,7 +22,8 @@ func main() {
 
 	conf, err := config.Load()
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to load config")
+		log.Err(err).Msg("failed to load config")
+		os.Exit(1)
 	}
 	a := activator.New()
 	telegramAPI := telegram.Init(conf.TelegramConfig)

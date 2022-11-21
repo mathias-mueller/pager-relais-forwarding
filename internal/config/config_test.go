@@ -158,14 +158,12 @@ func TestLoad(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fmt.Println(tt.args.config)
 			assert.NoError(t, os.WriteFile("config.ini", []byte(tt.args.config), os.ModePerm))
 			defer func() { assert.NoError(t, os.Remove("config.ini")) }()
 			got, err := Load()
 			if !tt.wantErr(t, err, fmt.Sprintf("Load(%+v)", tt.args)) {
 				return
 			}
-			fmt.Println(err)
 			assert.Equalf(t, tt.want, got, "Load()")
 		})
 	}
