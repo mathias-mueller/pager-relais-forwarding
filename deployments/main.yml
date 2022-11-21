@@ -1,5 +1,5 @@
 - name: Include Prometheus
-  import_playbook: playbooks/prometheus.yml
+  ansible.builtin.import_playbook: playbooks/prometheus.yml
 
 - name: Include Pager Service
-  import_playbook: playbooks/pager-relais-service.yml
+  ansible.builtin.import_playbook: playbooks/pager-relais-service.yml

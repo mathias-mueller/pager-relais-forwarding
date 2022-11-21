@@ -2,7 +2,7 @@
   hosts: all
   become: true
   tasks:
-    - name: create User
+    - name: Create User
       user:
         name: pager_forwarding
         groups: gpio
@@ -15,18 +15,18 @@
   become: true
   tasks:
     - name: Copy systemd service file to server
-      copy:
+      ansible.builtin.copy:
         src: resources/pager-forwarding.service
         dest: /etc/systemd/system
         owner: root
         group: root
     - name: Create Directory
-      file:
+      ansible.builtin.file:
         path: /usr/local/pager-forwarding
         state: directory
         mode: '0755'
     - name: Download Compiled Service
-      get_url:
+      ansible.builtin.get_url:
         url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
         dest: /usr/local/pager-forwarding/main
         mode: '0777'
@@ -47,7 +47,7 @@
   become: true
   tasks:
     - name: Start Service
-      service:
+      ansible.builtin.service:
         name: pager-forwarding
         state: restarted
         enabled: true
