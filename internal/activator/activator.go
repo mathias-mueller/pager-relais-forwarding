@@ -15,7 +15,7 @@ func New() *Activator {
 	return &Activator{
 		currentValue: false,
 		counter: promauto.NewCounter(prometheus.CounterOpts{
-			Name: "pager_forwarding_activations",
+			Name: "pager_forwarding_activations_total",
 			Help: "The total number of activations",
 		}),
 	}

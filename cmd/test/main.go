@@ -6,6 +6,7 @@ import (
 	"awesomeProject1/internal/telegram"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
@@ -38,9 +39,16 @@ func main() {
 	)
 
 	inputs <- true
-	http.Handle("/metrics", promhttp.Handler())
-	err = http.ListenAndServe(":2112", nil)
+	handler := http.NewServeMux()
+	handler.Handle("/metrics", promhttp.Handler())
+	server := &http.Server{
+		Addr:              ":2112",
+		ReadHeaderTimeout: time.Second,
+		Handler:           handler,
+	}
+
+	err = server.ListenAndServe()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Server failed")
+		log.Err(err).Msg("Server failed")
 	}
 }

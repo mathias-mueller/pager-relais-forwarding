@@ -61,6 +61,7 @@ func main() {
 
 	err = server.ListenAndServe()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Server failed")
+		log.Err(err).Msg("Server failed")
+		os.Exit(1)
 	}
 }
