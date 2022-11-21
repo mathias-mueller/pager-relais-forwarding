@@ -1,53 +1,5 @@
-- name: Setup User
-  hosts: all
-  become: true
-  tasks:
-    - name: create User
-      user:
-        name: pager_forwarding
-        groups: gpio
-        shell: /sbin/nologin
-        append: true
-        state: present
-        create_home: false
-- name: Setup files
-  hosts: all
-  become: true
-  tasks:
-    - name: Copy systemd service file to server
-      copy:
-        src: resources/pager-forwarding.service
-        dest: /etc/systemd/system
-        owner: root
-        group: root
-    - name: Create Directory
-      file:
-        path: /usr/local/pager-forwarding
-        state: directory
-        mode: '0755'
-    - name: Download Compiled Service
-      get_url:
-        url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
-        dest: /usr/local/pager-forwarding/main
-        mode: '0777'
-    - name: Copy Config
-      ansible.builtin.copy:
-        src: resources/config.ini
-        dest: /usr/local/pager-forwarding/config.ini
-        owner: root
-        group: root
-    - name: Copy Message file
-      ansible.builtin.copy:
-        src: resources/message.txt
-        dest: /usr/local/pager-forwarding/message.txt
-        owner: root
-        group: root
-- name: Start
-  hosts: all
-  become: true
-  tasks:
-    - name: Start Service
-      service:
-        name: pager-forwarding
-        state: restarted
-        enabled: true
+- name: Include Prometheus
+  import_playbook: playbooks/prometheus.yml
+
+- name: Include Pager Service
+  import_playbook: playbooks/pager-relais-service.yml
