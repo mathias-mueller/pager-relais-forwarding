@@ -65,7 +65,8 @@ func Init(conf *config.TelegramConfig) *API {
 
 func (api *API) SendMsgString(text string) {
 	api.counter.Inc()
-	start := time.Now()
+	timer := prometheus.NewTimer(api.histogram)
+	defer timer.ObserveDuration()
 	msg := tgbotapi.NewMessage(api.conf.ChatID, text)
 
 	_, e := api.bot.Send(msg)
@@ -73,8 +74,6 @@ func (api *API) SendMsgString(text string) {
 		log.Err(e).Msg("Cannot send message")
 	}
 	log.Info().Msg("Msg sent")
-	end := time.Now()
-	api.histogram.Observe(float64(end.Sub(start).Milliseconds()))
 }
 
 func (api *API) SendMsg() {

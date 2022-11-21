@@ -34,10 +34,9 @@ func Start(config *config.GpioConfig) <-chan bool {
 				return
 			case <-ticker.C:
 				go func() {
-					begin := time.Now()
+					timer := prometheus.NewTimer(gpioProcessed)
+					defer timer.ObserveDuration()
 					output <- IsPinHigh(config)
-					end := time.Now()
-					gpioProcessed.Observe(float64(end.Sub(begin).Milliseconds()))
 				}()
 			}
 		}

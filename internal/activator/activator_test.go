@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -84,6 +85,7 @@ func TestActivator_EnableActivation(t *testing.T) {
 				time.Millisecond*100,
 				time.Millisecond,
 			)
+			prometheus.Unregister(activator.counter)
 		})
 	}
 }
