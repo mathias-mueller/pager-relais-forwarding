@@ -44,6 +44,11 @@
         src: resources/prometheus.service
         dest: /etc/systemd/system
         mode: '0777'
+    - name: Copy Prometheus Configuration
+      ansible.builtin.copy:
+        src: resources/prometheus-config.yml
+        dest: /usr/local/prometheus/prometheus.yml
+        mode: '0755'
     - name: Start Prometheus Service
       ansible.builtin.service:
         name: prometheus
