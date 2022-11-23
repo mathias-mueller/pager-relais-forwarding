@@ -4,5 +4,8 @@
 - name: Include Node Exporter
   ansible.builtin.import_playbook: playbooks/prometheus-node-exporter.yml
 
+- name: Include Grafana
+  ansible.builtin.import_playbook: playbooks/grafana.yml
+
 - name: Include Pager Service
   ansible.builtin.import_playbook: playbooks/pager-relais-service.yml
