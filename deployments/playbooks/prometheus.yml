@@ -20,7 +20,7 @@
     - name: Copy files
       ansible.builtin.copy:
         remote_src: true
-        src: /tmp/prometheus/prometheus-2.40.2.linux-armv7
+        src: /tmp/prometheus/prometheus-2.40.2.linux-armv7/
         dest: /usr/local/prometheus
         mode: '0777'
     - name: Remove temp
