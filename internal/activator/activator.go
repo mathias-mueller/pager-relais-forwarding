@@ -22,6 +22,7 @@ func New() *Activator {
 }
 
 func (activator *Activator) EnableActivation(inputs <-chan bool, activations []Activation) {
+	log.Info().Msg("Listening for activation inputs")
 	for input := range inputs {
 		log.Trace().
 			Bool("currentValue", activator.currentValue).

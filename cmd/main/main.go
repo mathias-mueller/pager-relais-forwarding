@@ -5,6 +5,7 @@ import (
 	"awesomeProject1/internal/config"
 	"awesomeProject1/internal/gpio"
 	"awesomeProject1/internal/telegram"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -54,10 +55,13 @@ func main() {
 	handler := http.NewServeMux()
 	handler.Handle("/metrics", promhttp.Handler())
 	server := &http.Server{
-		Addr:              ":2112",
+		Addr:              fmt.Sprintf(":%d", conf.GeneralConfig.MetricsPort),
 		ReadHeaderTimeout: time.Second,
 		Handler:           handler,
 	}
+	log.Info().
+		Str("addr", server.Addr).
+		Msg("Starting server")
 
 	err = server.ListenAndServe()
 	if err != nil {
