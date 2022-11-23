@@ -9,7 +9,8 @@ Restart=on-failure
 
 ExecStart=/usr/local/prometheus/prometheus \
   --config.file=/usr/local/prometheus/prometheus.yml \
-  --storage.tsdb.path=/usr/local/prometheus/data
+  --storage.tsdb.path=/usr/local/prometheus/data \
+  --storage.tsdb.retention.time=90d
 
 [Install]
 WantedBy=multi-user.target
