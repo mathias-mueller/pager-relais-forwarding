@@ -1,5 +1,6 @@
 - name: Download Prometheus
   hosts: all
+  become: true
   tasks:
     - name: Create tmp dir
       ansible.builtin.file:
@@ -28,6 +29,7 @@
         state: absent
 - name: Setup Service
   hosts: all
+  become: true
   tasks:
     - name: Create Prometheus User
       ansible.builtin.user:
