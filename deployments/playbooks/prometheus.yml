@@ -29,6 +29,14 @@
 - name: Setup Service
   hosts: all
   tasks:
+    - name: Create Prometheus User
+      ansible.builtin.user:
+        name: prometheus
+        groups: pi
+        shell: /sbin/nologin
+        append: true
+        state: present
+        create_home: false
     - name: Copy Prometheus Service file
       ansible.builtin.copy:
         src: resources/prometheus.service
