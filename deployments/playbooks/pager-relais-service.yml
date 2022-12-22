@@ -1,0 +1,56 @@
+- name: Setup User
+  hosts: all
+  become: true
+  tasks:
+    - name: Create User
+      ansible.builtin.user:
+        name: pager_forwarding
+        groups: gpio
+        shell: /sbin/nologin
+        append: true
+        state: present
+        create_home: false
+- name: Setup files
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy systemd service file to server
+      ansible.builtin.copy:
+        src: resources/pager-forwarding.service
+        dest: /etc/systemd/system
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Create Directory
+      ansible.builtin.file:
+        path: /usr/local/pager-forwarding
+        state: directory
+        mode: '0755'
+    - name: Download Compiled Service
+      ansible.builtin.get_url:
+        url: https://github.com/mathias-mueller/pager-relais-forwarding/releases/download/latest/pager-relais-forwarding_arm
+        dest: /usr/local/pager-forwarding/main
+        mode: '0777'
+    - name: Copy Config
+      ansible.builtin.copy:
+        src: resources/config.ini
+        dest: /usr/local/pager-forwarding/config.ini
+        owner: root
+        group: root
+        mode: '0755'
+    - name: Copy Message file
+      ansible.builtin.copy:
+        src: resources/message.txt
+        dest: /usr/local/pager-forwarding/message.txt
+        owner: root
+        group: root
+        mode: '0755'
+- name: Start
+  hosts: all
+  become: true
+  tasks:
+    - name: Start Service
+      ansible.builtin.service:
+        name: pager-forwarding
+        state: restarted
+        enabled: true
